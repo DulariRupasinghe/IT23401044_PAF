@@ -5,7 +5,7 @@ import NotificationPanel from "./components/NotificationPanel";
 function App() {
   return (
     <div>
-      <h1>Smart Campus</h1>
+      <h1>Smart-Campus</h1>
       <ResourceList />
       <NotificationPanel />
     </div>

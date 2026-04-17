@@ -13,6 +13,7 @@ import java.util.Optional;
 public class ResourceService {
 
     private final ResourceRepository resourceRepository;
+    private final NotificationService notificationService;
 
     public List<Resource> getAllResources() {
         return resourceRepository.findAll();
@@ -45,7 +46,19 @@ public class ResourceService {
         resource.setStatus(resourceDetails.getStatus());
         resource.setDescription(resourceDetails.getDescription());
 
-        return resourceRepository.save(resource);
+        Resource updatedResource = resourceRepository.save(resource);
+
+        // Notify if resource is out of service
+        if (updatedResource.getStatus() == Resource.ResourceStatus.OUT_OF_SERVICE) {
+            notificationService.sendNotification(
+                "admin@smartcampus.com", // Default admin recipient for now
+                "Resource Alert: " + updatedResource.getName(),
+                "The resource " + updatedResource.getName() + " in " + updatedResource.getLocation() + " is now OUT OF SERVICE.",
+                com.smartcampus.model.Notification.NotificationType.MAINTENANCE
+            );
+        }
+
+        return updatedResource;
     }
 
     public void deleteResource(String id) {

@@ -2,16 +2,16 @@
 
 A production-ready platform for streamlining campus operations, featuring a robust Spring Boot REST API and a modern React web application.
 
-## 🚀 Overview
+## Project Overview
 
 The Smart-Campus Hub is designed to enhance campus life through automated attendance, real-time notifications, and facility management. This repository features the official Spring Boot + React architecture for a scalable and professional implementation.
 
-### 📋 Key Modules
-- **Module A: Facilities & Assets Catalogue** 🏫: Manage campus resources, lecture halls, and labs with a unified database.
-- **Module D: Notifications System** 🔔: Stay updated with real-time campus alerts, automated attendance confirmations, and feedback notifications.
+### Key Modules
+- **Module A: Facilities & Assets Catalogue** : Manage campus resources, lecture halls, and labs with a unified database.
+- **Module D: Notifications System** : Stay updated with real-time campus alerts, automated attendance confirmations, and feedback notifications.
 
-## 🛠️ Project Structure
-```text
+##Project Structure
+
 smart-campus-project/
 ├── backend/            # Spring Boot REST API
 │   ├── src/            # Java Source Code
@@ -19,9 +19,9 @@ smart-campus-project/
 └── frontend/           # React Web Application (Vite/Axios)
     ├── src/            # React Components & Services
     └── package.json    # Frontend Dependencies
-```
 
-## ⚙️ Getting Started
+
+## Getting Started
 
 ### Backend (Spring Boot)
 1. Navigate to established `backend/` directory.
@@ -34,10 +34,7 @@ smart-campus-project/
 3. Start development server: `npm run dev`
 4. Access App at `http://localhost:5173`.
 
-## 🛡️ Features
+##  Features
 - **Modern UI**: Built with React and Lucide icons for a premium aesthetic.
 - **Polling System**: Real-time notification updates every 10 seconds.
 - **Secure Architecture**: Decoupled frontend and backend for scalability.
-
----
-*Maintained by Antigravity AI Assistants.*

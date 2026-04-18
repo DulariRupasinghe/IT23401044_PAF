@@ -64,6 +64,12 @@ body {
   flex-direction: column;
   gap: 0.25rem;
   position: relative;
+  cursor: default;
+}
+
+.notification-item:hover {
+  border-color: var(--primary);
+  box-shadow: 0 4px 12px -2px rgb(0 0 0 / 0.05);
 }
 
 .notification-item.unread {

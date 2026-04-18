@@ -131,6 +131,27 @@ body {
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
+.nav-link {
+  justify-content: space-between;
+}
+
+.nav-item-content {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.unread-badge {
+  background: var(--danger);
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 999px;
+  min-width: 18px;
+  text-align: center;
+}
+
 .logout-btn {
   display: flex;
   align-items: center;

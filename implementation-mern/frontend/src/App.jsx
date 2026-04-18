@@ -10,6 +10,7 @@ import Analytics from './pages/Analytics';
 import Feedback from './pages/Feedback';
 import FAQ from './pages/FAQ';
 import UserManagement from './pages/UserManagement';
+import Notifications from './pages/Notifications';
 
 const AppContent = () => {
   const { user, loading } = useAuth();
@@ -28,6 +29,7 @@ const AppContent = () => {
               <Route path="/analytics" element={<Analytics />} />
               <Route path="/feedback" element={<Feedback />} />
               <Route path="/faq" element={<FAQ />} />
+              <Route path="/notifications" element={<Notifications />} />
               <Route path="/manage-students" element={<UserManagement />} />
               <Route path="*" element={<Navigate to="/" />} />
             </Routes>

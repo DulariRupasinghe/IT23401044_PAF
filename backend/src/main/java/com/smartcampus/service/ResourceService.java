@@ -39,6 +39,7 @@ public class ResourceService {
         Resource resource = resourceRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Resource not found with id: " + id));
 
+        Resource.ResourceStatus oldStatus = resource.getStatus();
         resource.setName(resourceDetails.getName());
         resource.setType(resourceDetails.getType());
         resource.setCapacity(resourceDetails.getCapacity());
@@ -48,10 +49,11 @@ public class ResourceService {
 
         Resource updatedResource = resourceRepository.save(resource);
 
-        // Notify if resource is out of service
-        if (updatedResource.getStatus() == Resource.ResourceStatus.OUT_OF_SERVICE) {
+        // Notify if resource just changed to out of service
+        if (updatedResource.getStatus() == Resource.ResourceStatus.OUT_OF_SERVICE && 
+            oldStatus != Resource.ResourceStatus.OUT_OF_SERVICE) {
             notificationService.sendNotification(
-                "admin@smartcampus.com", // Default admin recipient for now
+                "admin@smartcampus.com",
                 "Resource Alert: " + updatedResource.getName(),
                 "The resource " + updatedResource.getName() + " in " + updatedResource.getLocation() + " is now OUT OF SERVICE.",
                 com.smartcampus.model.Notification.NotificationType.MAINTENANCE

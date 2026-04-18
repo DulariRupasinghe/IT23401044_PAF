@@ -1,4 +1,3 @@
-import React from "react";
 import ResourceList from "./components/ResourceList";
 import NotificationPanel from "./components/NotificationPanel";
 import "./index.css";

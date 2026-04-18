@@ -4,7 +4,7 @@ A production-ready platform for streamlining campus operations, featuring a robu
 
 ## 🚀 Overview
 
-The Smart-Campus Hub is designed to enhance campus life through automated attendance, real-time notifications, and facility management. This repository focuses on the refined implementation using the Spring Boot and React stack.
+The Smart-Campus Hub is designed to enhance campus life through automated attendance, real-time notifications, and facility management. This repository features the official Spring Boot + React architecture for a scalable and professional implementation.
 
 ### 📋 Key Modules
 - **Module A: Facilities & Assets Catalogue** 🏫: Manage campus resources, lecture halls, and labs with a unified database.

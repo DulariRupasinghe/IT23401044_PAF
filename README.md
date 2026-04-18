@@ -1,40 +1,45 @@
-# Smart-Campus Operations Hub
+# Smart Campus Operations Hub
 
-A production-ready platform for streamlining campus operations, featuring a robust Spring Boot REST API and a modern React web application.
+This project is developed as part of the PAF module.
+
+It includes a Spring Boot backend and a React frontend to manage campus resources and notifications.
 
 ## Project Overview
 
-The Smart-Campus Hub is designed to enhance campus life through automated attendance, real-time notifications, and facility management. This repository features the official Spring Boot + React architecture for a scalable and professional implementation.
+The system allows users to manage facilities such as lecture halls, labs, and equipment, and receive notifications related to system activities.
 
-### Key Modules
-- **Module A: Facilities & Assets Catalogue** : Manage campus resources, lecture halls, and labs with a unified database.
-- **Module D: Notifications System** : Stay updated with real-time campus alerts, automated attendance confirmations, and feedback notifications.
+## Modules
 
-##Project Structure
+### Module A: Facilities & Assets Catalogue
+- Manage resources (lecture halls, labs, equipment)
+- Store details such as type, capacity, location, and status
+- Perform basic search and filtering
+
+### Module D: Notifications System
+- Display notifications related to system updates
+- Notify users when resource status changes
+- Mark notifications as read
+
+## Project Structure
 
 smart-campus-project/
-├── backend/            # Spring Boot REST API
-│   ├── src/            # Java Source Code
-│   └── pom.xml         # Maven Configuration
-└── frontend/           # React Web Application (Vite/Axios)
-    ├── src/            # React Components & Services
-    └── package.json    # Frontend Dependencies
-
+├── backend/        # Spring Boot API  
+├── frontend/       # React application  
 
 ## Getting Started
 
-### Backend (Spring Boot)
-1. Navigate to established `backend/` directory.
-2. Run `./mvnw spring-boot:run` or your preferred IDE runner.
-3. Access API at `http://localhost:8080`.
+### Backend
+1. Navigate to backend folder  
+2. Run the application using Maven or your IDE  
+3. API runs on http://localhost:8080  
 
-### Frontend (React)
-1. Navigate to established `frontend/` directory.
-2. Install dependencies: `npm install`
-3. Start development server: `npm run dev`
-4. Access App at `http://localhost:5173`.
+### Frontend
+1. Navigate to frontend folder  
+2. Run npm install  
+3. Run npm start or npm run dev  
 
-##  Features
-- **Modern UI**: Built with React and Lucide icons for a premium aesthetic.
-- **Polling System**: Real-time notification updates every 10 seconds.
-- **Secure Architecture**: Decoupled frontend and backend for scalability.
+## Features
+
+- Resource management (CRUD operations)
+- Notification panel with periodic updates (polling)
+- Basic UI for managing and viewing data

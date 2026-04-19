@@ -18,6 +18,18 @@ public class ResourceService {
         return resourceRepository.findAll();
     }
 
+    public List<Resource> getResources(Resource.ResourceType type, Integer minCapacity) {
+        if (type != null && minCapacity != null) {
+            return resourceRepository.findByTypeAndCapacityGreaterThanEqual(type, minCapacity);
+        } else if (type != null) {
+            return resourceRepository.findByType(type);
+        } else if (minCapacity != null) {
+            return resourceRepository.findByCapacityGreaterThanEqual(minCapacity);
+        } else {
+            return resourceRepository.findAll();
+        }
+    }
+
     public Optional<Resource> getResourceById(String id) {
         return resourceRepository.findById(id);
     }

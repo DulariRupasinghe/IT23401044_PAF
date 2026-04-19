@@ -78,7 +78,10 @@ export default function ResourceList() {
             <div key={res.id} className="card resource-card">
               <div className="header">
                 <div>
-                  <div className="name">{res.name}</div>
+                  <div className="name" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                    <span className={`status-dot ${res.status === 'ACTIVE' ? 'active' : 'out'}`}></span>
+                    {res.name}
+                  </div>
                   <div className="badge" style={{ marginTop: '0.5rem' }}>{res.type.replace('_', ' ')}</div>
                 </div>
                 <div className={`badge ${res.status === 'ACTIVE' ? 'badge-active' : 'badge-out'}`}>

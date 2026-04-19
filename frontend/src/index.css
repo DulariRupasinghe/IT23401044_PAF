@@ -201,3 +201,20 @@ body {
   background: #fee2e2;
   color: #991b1b;
 }
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.status-dot.active {
+  background-color: var(--success);
+  box-shadow: 0 0 8px var(--success);
+}
+
+.status-dot.out {
+  background-color: var(--danger);
+  box-shadow: 0 0 8px var(--danger);
+}

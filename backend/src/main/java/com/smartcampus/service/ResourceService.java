@@ -13,6 +13,7 @@ import java.util.Optional;
 public class ResourceService {
 
     private final ResourceRepository resourceRepository;
+    private final NotificationService notificationService;
 
     public List<Resource> getAllResources() {
         return resourceRepository.findAll();
@@ -42,14 +43,27 @@ public class ResourceService {
         Resource resource = resourceRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Resource not found with id: " + id));
 
+        Resource.ResourceStatus oldStatus = resource.getStatus();
+        Resource.ResourceStatus newStatus = resourceDetails.getStatus();
+
         resource.setName(resourceDetails.getName());
         resource.setType(resourceDetails.getType());
         resource.setCapacity(resourceDetails.getCapacity());
         resource.setLocation(resourceDetails.getLocation());
-        resource.setStatus(resourceDetails.getStatus());
+        resource.setStatus(newStatus);
         resource.setDescription(resourceDetails.getDescription());
 
-        return resourceRepository.save(resource);
+        Resource updatedResource = resourceRepository.save(resource);
+
+        if (oldStatus != newStatus) {
+            notificationService.sendNotification(
+                "Resource Status Update",
+                "Resource " + updatedResource.getName() + " is now " + newStatus,
+                com.smartcampus.model.Notification.NotificationType.MAINTENANCE
+            );
+        }
+
+        return updatedResource;
     }
 
     public void deleteResource(String id) {

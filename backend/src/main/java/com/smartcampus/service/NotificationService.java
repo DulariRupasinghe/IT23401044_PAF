@@ -13,25 +13,20 @@ public class NotificationService {
 
     private final NotificationRepository notificationRepository;
 
-    public List<Notification> getNotificationsForUser(String email) {
-        return notificationRepository.findByRecipientEmailOrderByCreatedAtDesc(email);
+    public List<Notification> getAllNotifications() {
+        return notificationRepository.findAllByOrderByCreatedAtDesc();
     }
 
     public java.util.Optional<Notification> getNotificationById(String id) {
         return notificationRepository.findById(id);
     }
 
-    public List<Notification> getUnreadNotificationsForUser(String email) {
-        return notificationRepository.findByRecipientEmailAndStatus(email, Notification.NotificationStatus.UNREAD);
-    }
-
     public Notification createNotification(Notification notification) {
         return notificationRepository.save(notification);
     }
 
-    public void sendNotification(String recipientEmail, String title, String message, Notification.NotificationType type) {
+    public void sendNotification(String title, String message, Notification.NotificationType type) {
         Notification notification = new Notification();
-        notification.setRecipientEmail(recipientEmail);
         notification.setTitle(title);
         notification.setMessage(message);
         notification.setType(type);
@@ -47,12 +42,6 @@ public class NotificationService {
         
         notification.setStatus(Notification.NotificationStatus.READ);
         return notificationRepository.save(notification);
-    }
-
-    public void markAllAsRead(String email) {
-        List<Notification> unread = notificationRepository.findByRecipientEmailAndStatus(email, Notification.NotificationStatus.UNREAD);
-        unread.forEach(n -> n.setStatus(Notification.NotificationStatus.READ));
-        notificationRepository.saveAll(unread);
     }
 
     public void deleteNotification(String id) {

@@ -35,24 +35,14 @@ public class NotificationController {
                 .orElse(org.springframework.http.ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/{email}")
-    public List<Notification> getUser(@PathVariable String email) {
-        return notificationService.getNotificationsForUser(email);
-    }
-
-    @GetMapping("/{email}/unread")
-    public List<Notification> getUnread(@PathVariable String email) {
-        return notificationService.getUnreadNotificationsForUser(email);
+    @GetMapping
+    public List<Notification> getAll() {
+        return notificationService.getAllNotifications();
     }
 
     @PatchMapping("/{id}")
     public Notification markRead(@PathVariable String id) {
         return notificationService.markAsRead(id);
-    }
-
-    @PatchMapping("/user/{email}/read-all")
-    public void markAllRead(@PathVariable String email) {
-        notificationService.markAllAsRead(email);
     }
 
     @DeleteMapping("/{id}")

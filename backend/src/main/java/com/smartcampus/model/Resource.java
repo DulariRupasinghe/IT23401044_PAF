@@ -1,19 +1,20 @@
 package com.smartcampus.model;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(collection = "resources")
 public class Resource {
+
     @Id
     private String id;
 
@@ -31,14 +32,18 @@ public class Resource {
 
     @NotNull(message = "Status is required")
     private ResourceStatus status;
-    
+
     private String description;
 
     public enum ResourceType {
-        LECTURE_HALL, LAB, MEETING_ROOM, EQUIPMENT
+        LECTURE_HALL, 
+        LAB, 
+        MEETING_ROOM, 
+        EQUIPMENT
     }
 
     public enum ResourceStatus {
-        ACTIVE, OUT_OF_SERVICE
+        ACTIVE, 
+        OUT_OF_SERVICE
     }
 }

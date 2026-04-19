@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -17,14 +18,7 @@ public class ResourceController {
     private final ResourceService resourceService;
 
     @GetMapping
-    public List<Resource> getAll(
-            @RequestParam(required = false) Resource.ResourceType type,
-            @RequestParam(required = false) Resource.ResourceStatus status) {
-        if (type != null) {
-            return resourceService.getResourcesByType(type);
-        } else if (status != null) {
-            return resourceService.getResourcesByStatus(status);
-        }
+    public List<Resource> getAll() {
         return resourceService.getAllResources();
     }
 
@@ -36,12 +30,12 @@ public class ResourceController {
     }
 
     @PostMapping
-    public Resource create(@RequestBody Resource resource) {
+    public Resource create(@Valid @RequestBody Resource resource) {
         return resourceService.createResource(resource);
     }
 
     @PutMapping("/{id}")
-    public Resource update(@PathVariable String id, @RequestBody Resource resource) {
+    public Resource update(@PathVariable String id, @Valid @RequestBody Resource resource) {
         return resourceService.updateResource(id, resource);
     }
 

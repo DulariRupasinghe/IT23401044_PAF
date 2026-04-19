@@ -13,18 +13,9 @@ import java.util.Optional;
 public class ResourceService {
 
     private final ResourceRepository resourceRepository;
-    private final NotificationService notificationService;
 
     public List<Resource> getAllResources() {
         return resourceRepository.findAll();
-    }
-
-    public List<Resource> getResourcesByType(Resource.ResourceType type) {
-        return resourceRepository.findByType(type);
-    }
-
-    public List<Resource> getResourcesByStatus(Resource.ResourceStatus status) {
-        return resourceRepository.findByStatus(status);
     }
 
     public Optional<Resource> getResourceById(String id) {
@@ -39,7 +30,6 @@ public class ResourceService {
         Resource resource = resourceRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Resource not found with id: " + id));
 
-        Resource.ResourceStatus oldStatus = resource.getStatus();
         resource.setName(resourceDetails.getName());
         resource.setType(resourceDetails.getType());
         resource.setCapacity(resourceDetails.getCapacity());
@@ -47,20 +37,7 @@ public class ResourceService {
         resource.setStatus(resourceDetails.getStatus());
         resource.setDescription(resourceDetails.getDescription());
 
-        Resource updatedResource = resourceRepository.save(resource);
-
-        // Notify if resource just changed to out of service
-        if (updatedResource.getStatus() == Resource.ResourceStatus.OUT_OF_SERVICE && 
-            oldStatus != Resource.ResourceStatus.OUT_OF_SERVICE) {
-            notificationService.sendNotification(
-                "admin@smartcampus.com",
-                "Resource Alert: " + updatedResource.getName(),
-                "The resource " + updatedResource.getName() + " in " + updatedResource.getLocation() + " is now OUT OF SERVICE.",
-                com.smartcampus.model.Notification.NotificationType.MAINTENANCE
-            );
-        }
-
-        return updatedResource;
+        return resourceRepository.save(resource);
     }
 
     public void deleteResource(String id) {

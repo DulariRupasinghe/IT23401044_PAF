@@ -20,15 +20,10 @@ public class Notification {
     private String title;
     private String message;
 
-    private NotificationStatus status = NotificationStatus.UNREAD;
+    private boolean read = false;
     private NotificationType type;
 
-    private LocalDateTime createdAt = LocalDateTime.now();
-
-    public enum NotificationStatus {
-        READ, 
-        UNREAD
-    }
+    private LocalDateTime timestamp = LocalDateTime.now();
 
     public enum NotificationType {
         BOOKING, 

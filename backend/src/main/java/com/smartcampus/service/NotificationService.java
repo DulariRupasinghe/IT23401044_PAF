@@ -14,7 +14,7 @@ public class NotificationService {
     private final NotificationRepository notificationRepository;
 
     public List<Notification> getAllNotifications() {
-        return notificationRepository.findAllByOrderByCreatedAtDesc();
+        return notificationRepository.findAllByOrderByTimestampDesc();
     }
 
     public java.util.Optional<Notification> getNotificationById(String id) {
@@ -30,8 +30,7 @@ public class NotificationService {
         notification.setTitle(title);
         notification.setMessage(message);
         notification.setType(type);
-        notification.setStatus(Notification.NotificationStatus.UNREAD);
-        notification.setCreatedAt(java.time.LocalDateTime.now());
+        notification.setRead(false);
         
         notificationRepository.save(notification);
     }
@@ -40,8 +39,16 @@ public class NotificationService {
         Notification notification = notificationRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Notification not found with id: " + id));
         
-        notification.setStatus(Notification.NotificationStatus.READ);
+        notification.setRead(true);
         return notificationRepository.save(notification);
+    }
+
+    public void markAllRead() {
+        List<Notification> notifications = notificationRepository.findAll();
+        for (Notification n : notifications) {
+            n.setRead(true);
+        }
+        notificationRepository.saveAll(notifications);
     }
 
     public void deleteNotification(String id) {

@@ -2,11 +2,20 @@ package com.smartcampus.controller;
 
 import com.smartcampus.model.Resource;
 import com.smartcampus.service.ResourceService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -18,8 +27,10 @@ public class ResourceController {
     private final ResourceService resourceService;
 
     @GetMapping
-    public List<Resource> getAll() {
-        return resourceService.getAllResources();
+    public List<Resource> getAll(
+            @RequestParam(required = false) Resource.ResourceType type,
+            @RequestParam(required = false) Integer capacity) {
+        return resourceService.getResources(type, capacity);
     }
 
     @GetMapping("/{id}")

@@ -13,20 +13,28 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Document(collection = "notifications")
 public class Notification {
+
     @Id
     private String id;
+
     private String recipientEmail;
     private String title;
     private String message;
+
     private NotificationStatus status = NotificationStatus.UNREAD;
     private NotificationType type;
+
     private LocalDateTime createdAt = LocalDateTime.now();
 
     public enum NotificationStatus {
-        READ, UNREAD
+        READ, 
+        UNREAD
     }
 
     public enum NotificationType {
-        BOOKING, MAINTENANCE, COMMENT, SYSTEM
+        BOOKING, 
+        MAINTENANCE, 
+        COMMENT, 
+        SYSTEM
     }
 }

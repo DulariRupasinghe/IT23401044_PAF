@@ -33,12 +33,14 @@ public class NotificationService {
         notification.setType(type);
         notification.setStatus(Notification.NotificationStatus.UNREAD);
         notification.setCreatedAt(java.time.LocalDateTime.now());
+        
         notificationRepository.save(notification);
     }
 
     public Notification markAsRead(String id) {
         Notification notification = notificationRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Notification not found with id: " + id));
+        
         notification.setStatus(Notification.NotificationStatus.READ);
         return notificationRepository.save(notification);
     }

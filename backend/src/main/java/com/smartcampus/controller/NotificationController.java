@@ -28,6 +28,13 @@ public class NotificationController {
         return notificationService.createNotification(notification);
     }
 
+    @GetMapping("/id/{id}")
+    public org.springframework.http.ResponseEntity<Notification> getById(@PathVariable String id) {
+        return notificationService.getNotificationById(id)
+                .map(org.springframework.http.ResponseEntity::ok)
+                .orElse(org.springframework.http.ResponseEntity.notFound().build());
+    }
+
     @GetMapping("/{email}")
     public List<Notification> getUser(@PathVariable String email) {
         return notificationService.getNotificationsForUser(email);

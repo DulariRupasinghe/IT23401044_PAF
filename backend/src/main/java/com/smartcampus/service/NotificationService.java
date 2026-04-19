@@ -17,6 +17,10 @@ public class NotificationService {
         return notificationRepository.findByRecipientEmailOrderByCreatedAtDesc(email);
     }
 
+    public java.util.Optional<Notification> getNotificationById(String id) {
+        return notificationRepository.findById(id);
+    }
+
     public List<Notification> getUnreadNotificationsForUser(String email) {
         return notificationRepository.findByRecipientEmailAndStatus(email, Notification.NotificationStatus.UNREAD);
     }

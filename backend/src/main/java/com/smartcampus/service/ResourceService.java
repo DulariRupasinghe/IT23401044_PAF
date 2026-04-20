@@ -55,7 +55,7 @@ public class ResourceService {
 
         Resource updatedResource = resourceRepository.save(resource);
 
-        if (oldStatus != newStatus) {
+        if (!oldStatus.equals(newStatus)) {
             notificationService.sendNotification(
                 "Resource Status Update",
                 "Resource " + updatedResource.getName() + " is now " + newStatus,

@@ -84,9 +84,9 @@ export default function ResourceList() {
                   </div>
                   <div className="badge" style={{ marginTop: '0.5rem' }}>{res.type.replace('_', ' ')}</div>
                 </div>
-                <div className={`badge ${res.status === 'ACTIVE' ? 'badge-active' : 'badge-out'}`}>
-                  {res.status.replace('_', ' ')}
-                </div>
+                <span className={res.status === "ACTIVE" ? "badge green" : "badge red"}>
+                  {res.status}
+                </span>
               </div>
 
               <div className="details">

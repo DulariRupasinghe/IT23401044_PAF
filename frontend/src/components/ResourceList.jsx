@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import * as api from "../services/api";
 import { Users, MapPin, Info, Search, Filter, Plus, Building2, Edit2, Trash2 } from "lucide-react";
 import ResourceModal from "./ResourceModal";
+import QRModal from "./QRModal";
 
 export default function ResourceList({ initialResources, refreshData, role }) {
   const [resources, setResources] = useState(initialResources || []);
@@ -9,6 +10,7 @@ export default function ResourceList({ initialResources, refreshData, role }) {
   const [capacity, setCapacity] = useState("");
   const [loading, setLoading] = useState(!initialResources);
   const [modalState, setModalState] = useState({ open: false, resource: null });
+  const [qrModalState, setQrModalState] = useState({ open: false, resource: null });
 
   const isAdmin = role === 'ADMIN';
 
@@ -170,7 +172,7 @@ export default function ResourceList({ initialResources, refreshData, role }) {
               </div>
 
               <div style={{ display: 'flex', gap: '0.75rem' }}>
-                  <button className="btn" style={{ flex: 1, padding: '0.6rem', fontSize: '0.85rem', background: 'var(--surface-elevated)', border: '1px solid var(--border)' }}>View QR</button>
+                  <button className="btn" style={{ flex: 1, padding: '0.6rem', fontSize: '0.85rem', background: 'var(--surface-elevated)', border: '1px solid var(--border)' }} onClick={() => setQrModalState({ open: true, resource: res })}>View QR</button>
                   <button className="btn btn-primary" style={{ flex: 2, padding: '0.6rem', fontSize: '0.85rem' }}>{isAdmin ? 'Manage Facility' : 'Request Access'}</button>
               </div>
             </div>
@@ -186,6 +188,12 @@ export default function ResourceList({ initialResources, refreshData, role }) {
             resource={modalState.resource} 
           />
       )}
+
+      <QRModal 
+        isOpen={qrModalState.open} 
+        onClose={() => setQrModalState({ open: false, resource: null })} 
+        resource={qrModalState.resource} 
+      />
 
       <style>{`
         @keyframes spin { to { transform: rotate(360deg); } }

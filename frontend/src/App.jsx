@@ -3,7 +3,7 @@ import ResourceList from "./components/ResourceList";
 import NotificationPanel from "./components/NotificationPanel";
 import DashboardStats from "./components/DashboardStats";
 import AnalyticsView from "./components/AnalyticsView";
-import { LayoutDashboard, Building2, Bell, Settings, User, Search, LogOut, Sun, Moon, BarChart3 } from 'lucide-react';
+import { LayoutDashboard, Building2, Bell, Settings, User, Search, LogOut, Sun, Moon, BarChart3, ShieldCheck, GraduationCap, ChevronDown } from 'lucide-react';
 import * as api from "./services/api";
 import "./index.css";
 
@@ -12,8 +12,9 @@ function App() {
   const [notifications, setNotifications] = useState([]);
   const [isNotifOpen, setIsNotifOpen] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('analytics'); // 'analytics' or 'facilities'
+  const [activeTab, setActiveTab] = useState('analytics');
   const [isDark, setIsDark] = useState(false);
+  const [role, setRole] = useState('ADMIN'); // 'ADMIN' or 'STUDENT'
 
   const fetchData = async () => {
     try {
@@ -44,6 +45,12 @@ function App() {
       }
   }, [isDark]);
 
+  // Handle auto-tab switch when role changes
+  useEffect(() => {
+    if (role === 'STUDENT') setActiveTab('facilities');
+    else setActiveTab('analytics');
+  }, [role]);
+
   return (
     <div className={`app-container ${isDark ? 'dark' : ''}`}>
       {/* Sidebar Navigation */}
@@ -56,17 +63,20 @@ function App() {
         </div>
 
         <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', flex: 1 }}>
-          <button 
-            className="btn" 
-            style={{ 
-                background: activeTab === 'analytics' ? 'rgba(99, 102, 241, 0.1)' : 'transparent', 
-                color: activeTab === 'analytics' ? 'var(--primary)' : 'var(--text-muted)', 
-                width: '100%', justifyContent: 'flex-start' 
-            }}
-            onClick={() => setActiveTab('analytics')}
-          >
-            <BarChart3 size={20} /> Analytics
-          </button>
+          {role === 'ADMIN' && (
+            <button 
+              className="btn" 
+              style={{ 
+                  background: activeTab === 'analytics' ? 'rgba(99, 102, 241, 0.1)' : 'transparent', 
+                  color: activeTab === 'analytics' ? 'var(--primary)' : 'var(--text-muted)', 
+                  width: '100%', justifyContent: 'flex-start' 
+              }}
+              onClick={() => setActiveTab('analytics')}
+            >
+              <BarChart3 size={20} /> Analytics
+            </button>
+          )}
+          
           <button 
             className="btn" 
             style={{ 
@@ -76,19 +86,23 @@ function App() {
             }}
             onClick={() => setActiveTab('facilities')}
           >
-            <Building2 size={20} /> Facilities
+            <Building2 size={20} /> {role === 'ADMIN' ? 'Facilities' : 'Catalogue'}
           </button>
+
           <button className="btn" style={{ width: '100%', justifyContent: 'flex-start', color: 'var(--text-muted)' }} onClick={() => setIsNotifOpen(true)}>
             <Bell size={20} /> Notifications
           </button>
-          <button className="btn" style={{ width: '100%', justifyContent: 'flex-start', color: 'var(--text-muted)' }}>
-            <Settings size={20} /> System Config
-          </button>
+
+          {role === 'ADMIN' && (
+            <button className="btn" style={{ width: '100%', justifyContent: 'flex-start', color: 'var(--text-muted)' }}>
+              <Settings size={20} /> System Config
+            </button>
+          )}
         </nav>
 
         <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '1rem', paddingTop: '2rem', borderTop: '1px solid var(--border)' }}>
           <button className="btn" style={{ width: '100%', justifyContent: 'center', background: 'var(--bg-main)', border: '1px solid var(--border)' }} onClick={() => setIsDark(!isDark)}>
-              {isDark ? <Sun size={18} /> : <Moon size={18} />} {isDark ? 'Light Mode' : 'Dark Mode'}
+              {isDark ? <Sun size={18} /> : <Moon size={18} />} {isDark ? 'Light' : 'Dark'}
           </button>
           <button className="btn" style={{ width: '100%', justifyContent: 'flex-start', color: 'var(--error)' }}>
             <LogOut size={20} /> Logout
@@ -100,11 +114,43 @@ function App() {
       <main className="main-content">
         <header className="header">
           <div>
-            <h1 style={{ fontSize: '1.8rem' }}>{activeTab === 'analytics' ? 'Analytics Dashboard' : 'Facility Management'}</h1>
+            <h1 style={{ fontSize: '1.8rem' }}>
+                {role === 'ADMIN' ? (activeTab === 'analytics' ? 'Admin Dashboard' : 'Facility Management') : 'Campus Catalogue'}
+            </h1>
             <p className="text-muted">Smart-Campus Hub • {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+            {/* Role Switcher */}
+            <div className="glass" style={{ display: 'flex', padding: '4px', borderRadius: '12px', background: 'var(--bg-main)' }}>
+                <button 
+                    className="btn" 
+                    style={{ 
+                        padding: '0.4rem 1rem', 
+                        fontSize: '0.8rem', 
+                        background: role === 'ADMIN' ? 'var(--primary)' : 'transparent',
+                        color: role === 'ADMIN' ? 'white' : 'var(--text-muted)',
+                        borderRadius: '8px'
+                    }}
+                    onClick={() => setRole('ADMIN')}
+                >
+                    <ShieldCheck size={14} /> Admin
+                </button>
+                <button 
+                    className="btn" 
+                    style={{ 
+                        padding: '0.4rem 1rem', 
+                        fontSize: '0.8rem', 
+                        background: role === 'STUDENT' ? 'var(--primary)' : 'transparent',
+                        color: role === 'STUDENT' ? 'white' : 'var(--text-muted)',
+                        borderRadius: '8px'
+                    }}
+                    onClick={() => setRole('STUDENT')}
+                >
+                    <GraduationCap size={14} /> Student
+                </button>
+            </div>
+
             <div className="glass" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', borderRadius: '12px' }}>
               <Search size={18} color="var(--text-muted)" />
               <input type="text" placeholder="Search operations..." style={{ border: 'none', background: 'transparent', outline: 'none', fontSize: '0.9rem', color: 'var(--text-main)' }} />
@@ -119,22 +165,24 @@ function App() {
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', paddingLeft: '1.5rem', borderLeft: '1px solid var(--border)' }}>
               <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: 'linear-gradient(135deg, var(--primary), #818cf8)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
-                <User size={20} />
+                {role === 'ADMIN' ? <User size={20} /> : <GraduationCap size={20} />}
               </div>
-              <div>
-                <p style={{ fontSize: '0.85rem', fontWeight: 600 }}>Admin User</p>
-                <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Super Admin</p>
+              <div style={{ cursor: 'pointer' }}>
+                <p style={{ fontSize: '0.85rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    {role === 'ADMIN' ? 'Admin Portal' : 'Student Access'} <ChevronDown size={12} />
+                </p>
+                <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{role === 'ADMIN' ? 'Full Access' : 'View Only'}</p>
               </div>
             </div>
           </div>
         </header>
 
-        <DashboardStats resources={resources} notifications={notifications} />
+        <DashboardStats resources={resources} notifications={notifications} role={role} />
         
-        {activeTab === 'analytics' ? (
+        {role === 'ADMIN' && activeTab === 'analytics' ? (
             <AnalyticsView resources={resources} notifications={notifications} />
         ) : (
-            <ResourceList initialResources={resources} refreshData={fetchData} />
+            <ResourceList initialResources={resources} refreshData={fetchData} role={role} />
         )}
       </main>
 
@@ -149,5 +197,6 @@ function App() {
 }
 
 export default App;
+
 
 

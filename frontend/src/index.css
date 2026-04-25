@@ -3,46 +3,30 @@
 :root {
   /* Brand Colors */
   --primary: #6366f1;
-  --primary-glow: rgba(99, 102, 241, 0.5);
+  --primary-glow: rgba(99, 102, 241, 0.4);
   --secondary: #10b981;
   --accent: #f59e0b;
   
-  /* Neutral Palette */
+  /* Light Mode Palette */
   --bg-main: #f8fafc;
   --bg-sidebar: #ffffff;
-  --surface: rgba(255, 255, 255, 0.8);
-  --surface-hover: rgba(255, 255, 255, 0.95);
-  
+  --surface: rgba(255, 255, 255, 0.85);
+  --surface-elevated: #ffffff;
   --text-main: #0f172a;
   --text-muted: #64748b;
-  --text-inverse: #ffffff;
-  
-  /* Status Colors */
-  --success: #10b981;
-  --warning: #f59e0b;
-  --error: #ef4444;
-  --info: #3b82f6;
-  
-  /* UI Elements */
   --border: rgba(226, 232, 240, 0.8);
-  --radius-sm: 8px;
-  --radius-md: 16px;
-  --radius-lg: 24px;
-  
-  /* Shadows */
-  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-  
-  /* Layout */
-  --sidebar-width: 280px;
-  --header-height: 80px;
+  --input-bg: #ffffff;
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+.dark {
+  --bg-main: #020617;
+  --bg-sidebar: #0f172a;
+  --surface: rgba(30, 41, 59, 0.7);
+  --surface-elevated: #1e293b;
+  --text-main: #f1f5f9;
+  --text-muted: #94a3b8;
+  --border: rgba(51, 65, 85, 0.5);
+  --input-bg: #1e293b;
 }
 
 body {
@@ -51,7 +35,9 @@ body {
   color: var(--text-main);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
+
 
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Outfit', sans-serif;

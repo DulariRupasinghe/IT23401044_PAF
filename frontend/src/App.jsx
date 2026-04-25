@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import ResourceList from "./components/ResourceList";
 import NotificationPanel from "./components/NotificationPanel";
 import DashboardStats from "./components/DashboardStats";
-import { LayoutDashboard, Building2, Bell, Settings, User, Search, LogOut } from 'lucide-react';
+import AnalyticsView from "./components/AnalyticsView";
+import { LayoutDashboard, Building2, Bell, Settings, User, Search, LogOut, Sun, Moon, BarChart3 } from 'lucide-react';
 import * as api from "./services/api";
 import "./index.css";
 
@@ -11,6 +12,8 @@ function App() {
   const [notifications, setNotifications] = useState([]);
   const [isNotifOpen, setIsNotifOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('analytics'); // 'analytics' or 'facilities'
+  const [isDark, setIsDark] = useState(false);
 
   const fetchData = async () => {
     try {
@@ -29,13 +32,20 @@ function App() {
 
   useEffect(() => {
     fetchData();
-    // Poll for notifications every 30s
     const interval = setInterval(fetchData, 30000);
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+      if (isDark) {
+          document.body.classList.add('dark');
+      } else {
+          document.body.classList.remove('dark');
+      }
+  }, [isDark]);
+
   return (
-    <div className="app-container">
+    <div className={`app-container ${isDark ? 'dark' : ''}`}>
       {/* Sidebar Navigation */}
       <aside className="sidebar">
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '3rem' }}>
@@ -46,24 +56,43 @@ function App() {
         </div>
 
         <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', flex: 1 }}>
-          <div className="btn" style={{ background: '#eef2ff', color: 'var(--primary)', width: '100%', justifyContent: 'flex-start' }}>
-            <LayoutDashboard size={20} /> Dashboard
-          </div>
-          <div className="btn" style={{ width: '100%', justifyContent: 'flex-start', color: 'var(--text-muted)' }}>
+          <button 
+            className="btn" 
+            style={{ 
+                background: activeTab === 'analytics' ? 'rgba(99, 102, 241, 0.1)' : 'transparent', 
+                color: activeTab === 'analytics' ? 'var(--primary)' : 'var(--text-muted)', 
+                width: '100%', justifyContent: 'flex-start' 
+            }}
+            onClick={() => setActiveTab('analytics')}
+          >
+            <BarChart3 size={20} /> Analytics
+          </button>
+          <button 
+            className="btn" 
+            style={{ 
+                background: activeTab === 'facilities' ? 'rgba(99, 102, 241, 0.1)' : 'transparent', 
+                color: activeTab === 'facilities' ? 'var(--primary)' : 'var(--text-muted)', 
+                width: '100%', justifyContent: 'flex-start' 
+            }}
+            onClick={() => setActiveTab('facilities')}
+          >
             <Building2 size={20} /> Facilities
-          </div>
-          <div className="btn" style={{ width: '100%', justifyContent: 'flex-start', color: 'var(--text-muted)' }} onClick={() => setIsNotifOpen(true)}>
+          </button>
+          <button className="btn" style={{ width: '100%', justifyContent: 'flex-start', color: 'var(--text-muted)' }} onClick={() => setIsNotifOpen(true)}>
             <Bell size={20} /> Notifications
-          </div>
-          <div className="btn" style={{ width: '100%', justifyContent: 'flex-start', color: 'var(--text-muted)' }}>
+          </button>
+          <button className="btn" style={{ width: '100%', justifyContent: 'flex-start', color: 'var(--text-muted)' }}>
             <Settings size={20} /> System Config
-          </div>
+          </button>
         </nav>
 
-        <div style={{ marginTop: 'auto', paddingTop: '2rem', borderTop: '1px solid var(--border)' }}>
-          <div className="btn" style={{ width: '100%', justifyContent: 'flex-start', color: 'var(--error)' }}>
+        <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '1rem', paddingTop: '2rem', borderTop: '1px solid var(--border)' }}>
+          <button className="btn" style={{ width: '100%', justifyContent: 'center', background: 'var(--bg-main)', border: '1px solid var(--border)' }} onClick={() => setIsDark(!isDark)}>
+              {isDark ? <Sun size={18} /> : <Moon size={18} />} {isDark ? 'Light Mode' : 'Dark Mode'}
+          </button>
+          <button className="btn" style={{ width: '100%', justifyContent: 'flex-start', color: 'var(--error)' }}>
             <LogOut size={20} /> Logout
-          </div>
+          </button>
         </div>
       </aside>
 
@@ -71,14 +100,14 @@ function App() {
       <main className="main-content">
         <header className="header">
           <div>
-            <h1 style={{ fontSize: '1.8rem' }}>Operational Overview</h1>
-            <p className="text-muted">Welcome back, Administrator</p>
+            <h1 style={{ fontSize: '1.8rem' }}>{activeTab === 'analytics' ? 'Analytics Dashboard' : 'Facility Management'}</h1>
+            <p className="text-muted">Smart-Campus Hub • {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
             <div className="glass" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', borderRadius: '12px' }}>
               <Search size={18} color="var(--text-muted)" />
-              <input type="text" placeholder="Search resources..." style={{ border: 'none', background: 'transparent', outline: 'none', fontSize: '0.9rem' }} />
+              <input type="text" placeholder="Search operations..." style={{ border: 'none', background: 'transparent', outline: 'none', fontSize: '0.9rem', color: 'var(--text-main)' }} />
             </div>
 
             <button className="btn-icon" onClick={() => setIsNotifOpen(true)} style={{ position: 'relative' }}>
@@ -92,7 +121,7 @@ function App() {
               <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: 'linear-gradient(135deg, var(--primary), #818cf8)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
                 <User size={20} />
               </div>
-              <div style={{ display: 'none', md: 'block' }}>
+              <div>
                 <p style={{ fontSize: '0.85rem', fontWeight: 600 }}>Admin User</p>
                 <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Super Admin</p>
               </div>
@@ -102,7 +131,11 @@ function App() {
 
         <DashboardStats resources={resources} notifications={notifications} />
         
-        <ResourceList initialResources={resources} />
+        {activeTab === 'analytics' ? (
+            <AnalyticsView resources={resources} notifications={notifications} />
+        ) : (
+            <ResourceList initialResources={resources} refreshData={fetchData} />
+        )}
       </main>
 
       <NotificationPanel 
@@ -116,4 +149,5 @@ function App() {
 }
 
 export default App;
+
 

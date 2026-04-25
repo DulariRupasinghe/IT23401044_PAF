@@ -3,6 +3,7 @@ import ResourceList from "./components/ResourceList";
 import NotificationPanel from "./components/NotificationPanel";
 import DashboardStats from "./components/DashboardStats";
 import AnalyticsView from "./components/AnalyticsView";
+import NotificationSettings from "./components/NotificationSettings";
 import { LayoutDashboard, Building2, Bell, Settings, User, Search, LogOut, Sun, Moon, BarChart3, ShieldCheck, GraduationCap, ChevronDown } from 'lucide-react';
 import * as api from "./services/api";
 import "./index.css";
@@ -11,10 +12,18 @@ function App() {
   const [resources, setResources] = useState([]);
   const [notifications, setNotifications] = useState([]);
   const [isNotifOpen, setIsNotifOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('analytics');
   const [isDark, setIsDark] = useState(false);
-  const [role, setRole] = useState('ADMIN'); // 'ADMIN' or 'STUDENT'
+  const [role, setRole] = useState('ADMIN');
+  
+  const [preferences, setPreferences] = useState({
+    SYSTEM: true,
+    MAINTENANCE: true,
+    BOOKING: true,
+    SECURITY: true
+  });
 
   const fetchData = async () => {
     try {
@@ -45,7 +54,6 @@ function App() {
       }
   }, [isDark]);
 
-  // Handle auto-tab switch when role changes
   useEffect(() => {
     if (role === 'STUDENT') setActiveTab('facilities');
     else setActiveTab('analytics');
@@ -93,11 +101,9 @@ function App() {
             <Bell size={20} /> Notifications
           </button>
 
-          {role === 'ADMIN' && (
-            <button className="btn" style={{ width: '100%', justifyContent: 'flex-start', color: 'var(--text-muted)' }}>
-              <Settings size={20} /> System Config
-            </button>
-          )}
+          <button className="btn" style={{ width: '100%', justifyContent: 'flex-start', color: 'var(--text-muted)' }} onClick={() => setIsSettingsOpen(true)}>
+            <Settings size={20} /> Preferences
+          </button>
         </nav>
 
         <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '1rem', paddingTop: '2rem', borderTop: '1px solid var(--border)' }}>
@@ -192,11 +198,19 @@ function App() {
         notifications={notifications} 
         refreshNotifs={fetchData}
       />
+
+      <NotificationSettings 
+        isOpen={isSettingsOpen} 
+        onClose={() => setIsSettingsOpen(false)} 
+        preferences={preferences}
+        setPreferences={setPreferences}
+      />
     </div>
   );
 }
 
 export default App;
+
 
 
 

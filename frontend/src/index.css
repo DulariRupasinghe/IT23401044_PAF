@@ -2,21 +2,28 @@
 
 :root {
   /* Sophisticated Brand Colors */
-  --primary: #4f46e5; /* Modern Indigo */
+  --primary: #4f46e5;
+  /* Modern Indigo */
   --primary-glow: rgba(79, 70, 229, 0.2);
-  --secondary: #0ea5e9; /* Sky Blue */
-  --accent: #8b5cf6; /* Soft Violet */
-  
+  --secondary: #0ea5e9;
+  /* Sky Blue */
+  --accent: #8b5cf6;
+  /* Soft Violet */
+
   /* Decent Light Mode Palette */
-  --bg-main: #fcfcfd; /* Off-white */
+  --bg-main: #fcfcfd;
+  /* Off-white */
   --bg-sidebar: #ffffff;
-  --surface: rgba(255, 255, 255, 0.7); /* Soft Glass */
+  --surface: rgba(255, 255, 255, 0.7);
+  /* Soft Glass */
   --surface-elevated: #ffffff;
-  --text-main: #1e293b; /* Deep Slate */
-  --text-muted: #64748b; /* Medium Slate */
+  --text-main: #1e293b;
+  /* Deep Slate */
+  --text-muted: #64748b;
+  /* Medium Slate */
   --border: rgba(226, 232, 240, 0.7);
   --input-bg: #f8fafc;
-  
+
   /* Status Colors */
   --success: #10b981;
   --warning: #f59e0b;
@@ -45,7 +52,12 @@ body {
 }
 
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: 'Outfit', sans-serif;
   font-weight: 700;
   letter-spacing: -0.02em;
@@ -170,9 +182,20 @@ h1, h2, h3, h4, h5, h6 {
   text-transform: uppercase;
 }
 
-.badge-success { background: #dcfce7; color: #166534; }
-.badge-warning { background: #fef3c7; color: #92400e; }
-.badge-danger { background: #fef2f2; color: #991b1b; }
+.badge-success {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.badge-warning {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.badge-danger {
+  background: #fef2f2;
+  color: #991b1b;
+}
 
 /* Notification Panel as Drawer */
 .notification-panel {
@@ -182,7 +205,7 @@ h1, h2, h3, h4, h5, h6 {
   bottom: 0;
   width: 400px;
   background: white;
-  box-shadow: -10px 0 30px rgba(0,0,0,0.05);
+  box-shadow: -10px 0 30px rgba(0, 0, 0, 0.05);
   z-index: 1000;
   padding: 2rem;
   transform: translateX(100%);
@@ -218,8 +241,15 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Animations */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .animate-in {
@@ -229,6 +259,12 @@ h1, h2, h3, h4, h5, h6 {
 /* Responsive */
 @media (max-width: 1024px) {
   --sidebar-width: 0px;
-  .sidebar { display: none; }
-  .main-content { margin-left: 0; }
+
+  .sidebar {
+    display: none;
+  }
+
+  .main-content {
+    margin-left: 0;
+  }
 }

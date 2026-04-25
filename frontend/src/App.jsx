@@ -4,6 +4,7 @@ import NotificationPanel from "./components/NotificationPanel";
 import DashboardStats from "./components/DashboardStats";
 import AnalyticsView from "./components/AnalyticsView";
 import NotificationSettings from "./components/NotificationSettings";
+import Login from "./components/Login";
 import { LayoutDashboard, Building2, Bell, Settings, User, Search, LogOut, Sun, Moon, BarChart3, ShieldCheck, GraduationCap, ChevronDown } from 'lucide-react';
 import * as api from "./services/api";
 import "./index.css";
@@ -17,6 +18,7 @@ function App() {
   const [activeTab, setActiveTab] = useState('analytics');
   const [isDark, setIsDark] = useState(false);
   const [role, setRole] = useState('ADMIN');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   
   const [preferences, setPreferences] = useState({
     SYSTEM: true,
@@ -41,10 +43,12 @@ function App() {
   };
 
   useEffect(() => {
-    fetchData();
-    const interval = setInterval(fetchData, 30000);
-    return () => clearInterval(interval);
-  }, []);
+    if (isLoggedIn) {
+      fetchData();
+      const interval = setInterval(fetchData, 30000);
+      return () => clearInterval(interval);
+    }
+  }, [isLoggedIn]);
 
   useEffect(() => {
       if (isDark) {
@@ -58,6 +62,19 @@ function App() {
     if (role === 'STUDENT') setActiveTab('facilities');
     else setActiveTab('analytics');
   }, [role]);
+
+  const handleLogin = (selectedRole) => {
+    setRole(selectedRole);
+    setIsLoggedIn(true);
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+  };
+
+  if (!isLoggedIn) {
+    return <Login onLogin={handleLogin} />;
+  }
 
   return (
     <div className={`app-container ${isDark ? 'dark' : ''}`}>
@@ -75,7 +92,7 @@ function App() {
             <button 
               className="btn" 
               style={{ 
-                  background: activeTab === 'analytics' ? 'rgba(99, 102, 241, 0.1)' : 'transparent', 
+                  background: activeTab === 'analytics' ? 'rgba(79, 102, 241, 0.1)' : 'transparent', 
                   color: activeTab === 'analytics' ? 'var(--primary)' : 'var(--text-muted)', 
                   width: '100%', justifyContent: 'flex-start' 
               }}
@@ -110,7 +127,7 @@ function App() {
           <button className="btn" style={{ width: '100%', justifyContent: 'center', background: 'var(--bg-main)', border: '1px solid var(--border)' }} onClick={() => setIsDark(!isDark)}>
               {isDark ? <Sun size={18} /> : <Moon size={18} />} {isDark ? 'Light' : 'Dark'}
           </button>
-          <button className="btn" style={{ width: '100%', justifyContent: 'flex-start', color: 'var(--error)' }}>
+          <button className="btn" style={{ width: '100%', justifyContent: 'flex-start', color: 'var(--error)' }} onClick={handleLogout}>
             <LogOut size={20} /> Logout
           </button>
         </div>
@@ -121,39 +138,43 @@ function App() {
         <header className="header">
           <div>
             <h1 style={{ fontSize: '1.8rem' }}>
-                {role === 'ADMIN' ? (activeTab === 'analytics' ? 'Admin Dashboard' : 'Facility Management') : 'Campus Catalogue'}
+                {role === 'ADMIN' ? (activeTab === 'analytics' ? 'Dashboard' : 'Facility Management') : 'Campus Catalogue'}
             </h1>
             <p className="text-muted">Smart-Campus Hub • {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
             {/* Role Switcher */}
-            <div className="glass" style={{ display: 'flex', padding: '4px', borderRadius: '12px', background: 'var(--bg-main)' }}>
+            <div className="glass" style={{ display: 'flex', padding: '4px', borderRadius: '12px', background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
                 <button 
                     className="btn" 
                     style={{ 
-                        padding: '0.4rem 1rem', 
-                        fontSize: '0.8rem', 
+                        padding: '0.4rem 1.25rem', 
+                        fontSize: '0.85rem', 
                         background: role === 'ADMIN' ? 'var(--primary)' : 'transparent',
                         color: role === 'ADMIN' ? 'white' : 'var(--text-muted)',
-                        borderRadius: '8px'
+                        borderRadius: '10px',
+                        boxShadow: role === 'ADMIN' ? '0 4px 12px rgba(79, 70, 229, 0.2)' : 'none',
+                        gap: '0.5rem'
                     }}
                     onClick={() => setRole('ADMIN')}
                 >
-                    <ShieldCheck size={14} /> Admin
+                    <ShieldCheck size={16} /> Admin
                 </button>
                 <button 
                     className="btn" 
                     style={{ 
-                        padding: '0.4rem 1rem', 
-                        fontSize: '0.8rem', 
+                        padding: '0.4rem 1.25rem', 
+                        fontSize: '0.85rem', 
                         background: role === 'STUDENT' ? 'var(--primary)' : 'transparent',
                         color: role === 'STUDENT' ? 'white' : 'var(--text-muted)',
-                        borderRadius: '8px'
+                        borderRadius: '10px',
+                        boxShadow: role === 'STUDENT' ? '0 4px 12px rgba(79, 70, 229, 0.2)' : 'none',
+                        gap: '0.5rem'
                     }}
                     onClick={() => setRole('STUDENT')}
                 >
-                    <GraduationCap size={14} /> Student
+                    <GraduationCap size={16} /> Student
                 </button>
             </div>
 
@@ -210,6 +231,7 @@ function App() {
 }
 
 export default App;
+
 
 
 

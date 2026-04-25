@@ -1,22 +1,24 @@
 import React, { useState, useEffect } from "react";
 import * as api from "../services/api";
-import { Users, MapPin, Info, Search } from "lucide-react";
+import { Users, MapPin, Info, Search, Filter, Plus, Building2 } from "lucide-react";
 
-export default function ResourceList() {
-  const [resources, setResources] = useState([]);
+export default function ResourceList({ initialResources }) {
+  const [resources, setResources] = useState(initialResources || []);
   const [type, setType] = useState("");
   const [capacity, setCapacity] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!initialResources);
 
   const fetchResources = async () => {
-    setLoading(true);
-    try {
-      const { data } = await api.getResources(type, capacity);
-      setResources(data);
-    } catch (error) {
-      console.error("Error fetching resources", error);
-    } finally {
-      setLoading(false);
+    if (!initialResources || type || capacity) {
+      setLoading(true);
+      try {
+        const { data } = await api.getResources(type, capacity);
+        setResources(data);
+      } catch (error) {
+        console.error("Error fetching resources", error);
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -24,22 +26,37 @@ export default function ResourceList() {
     fetchResources();
   }, [type, capacity]);
 
+  useEffect(() => {
+    if (initialResources && !type && !capacity) {
+        setResources(initialResources);
+    }
+  }, [initialResources, type, capacity]);
+
   return (
     <div className="resource-list">
-      <div className="header-section" style={{ marginBottom: '2rem' }}>
-        <h2>Facilities & Assets Catalogue</h2>
-        <p className="text-muted">Manage and monitor campus resources in real-time.</p>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '1.5rem' }}>
+        <div>
+          <h2 style={{ fontSize: '1.5rem' }}>Facilities & Assets</h2>
+          <p className="text-muted">Manage campus infrastructure and resource allocation.</p>
+        </div>
+        <button className="btn btn-primary">
+          <Plus size={18} /> Add New Resource
+        </button>
       </div>
 
-      <div className="card filter-bar">
+      <div className="glass card" style={{ display: 'flex', gap: '1.5rem', marginBottom: '2.5rem', alignItems: 'center', flexWrap: 'wrap', padding: '1rem 1.5rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: 'var(--text-muted)', fontSize: '0.9rem', fontWeight: 600 }}>
+          <Filter size={18} /> Quick Filter:
+        </div>
+
         <div className="filter-group">
-          <label>Resource Type</label>
           <select 
             className="input-field" 
+            style={{ border: 'none', background: 'transparent', fontWeight: 600 }}
             value={type} 
             onChange={(e) => setType(e.target.value)}
           >
-            <option value="">All Types</option>
+            <option value="">All Resource Types</option>
             <option value="LECTURE_HALL">Lecture Hall</option>
             <option value="LAB">Laboratory</option>
             <option value="MEETING_ROOM">Meeting Room</option>
@@ -47,68 +64,86 @@ export default function ResourceList() {
           </select>
         </div>
 
-        <div className="filter-group">
-          <label>Min Capacity</label>
+        <div className="filter-group" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', borderLeft: '1px solid var(--border)', paddingLeft: '1.5rem' }}>
+          <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>Min Capacity:</span>
           <input 
             type="number" 
             className="input-field" 
-            placeholder="e.g. 30"
+            style={{ border: 'none', background: 'transparent', width: '80px', fontWeight: 600 }}
+            placeholder="0"
             value={capacity}
             onChange={(e) => setCapacity(e.target.value)}
           />
         </div>
 
         <div style={{ marginLeft: 'auto', display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-            <Search size={18} color="var(--text-muted)" />
-            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>{resources.length} items found</span>
+            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', background: '#f1f5f9', padding: '0.25rem 0.75rem', borderRadius: '8px' }}>
+                {resources.length} resources listed
+            </span>
         </div>
       </div>
 
       {loading ? (
-        <div style={{ textAlign: 'center', padding: '3rem' }}>Loading resources...</div>
+        <div style={{ textAlign: 'center', padding: '3rem' }}>
+            <div style={{ width: '40px', height: '40px', border: '3px solid #eef2ff', borderTopColor: 'var(--primary)', borderRadius: '50%', animation: 'spin 1s linear infinite', margin: '0 auto 1rem' }}></div>
+            <p className="text-muted">Loading catalogue...</p>
+        </div>
       ) : resources.length === 0 ? (
-        <div className="card" style={{ textAlign: 'center', padding: '4rem' }}>
-          <Info size={48} color="var(--text-muted)" style={{ marginBottom: '1rem' }} />
-          <h3>No resources found</h3>
-          <p className="text-muted">Try adjusting your filters to find what you're looking for.</p>
+        <div className="card" style={{ textAlign: 'center', padding: '4rem', background: 'transparent', borderStyle: 'dashed' }}>
+          <Info size={48} color="var(--text-muted)" style={{ marginBottom: '1rem', opacity: 0.5 }} />
+          <h3>No resources match your criteria</h3>
+          <p className="text-muted">Try clearing filters or checking different facility types.</p>
+          <button className="btn" style={{ marginTop: '1.5rem', border: '1px solid var(--border)' }} onClick={() => { setType(""); setCapacity(""); }}>Reset Filters</button>
         </div>
       ) : (
         <div className="resource-grid">
-          {resources.map((res) => (
-            <div key={res.id} className="card resource-card">
-              <div className="header">
-                <div>
-                  <div className="name" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                    <span className={`status-dot ${res.status === 'ACTIVE' ? 'active' : 'out'}`}></span>
-                    {res.name}
-                  </div>
-                  <div className="badge" style={{ marginTop: '0.5rem' }}>{res.type.replace('_', ' ')}</div>
+          {resources.map((res, idx) => (
+            <div key={res.id} className="card animate-in" style={{ animationDelay: `${idx * 0.05}s` }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.25rem' }}>
+                <div style={{ display: 'flex', gap: '1rem' }}>
+                    <div style={{ width: '44px', height: '44px', borderRadius: '12px', background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary)' }}>
+                        <Building2 size={22} />
+                    </div>
+                    <div>
+                        <h4 style={{ fontSize: '1.05rem', marginBottom: '0.2rem' }}>{res.name}</h4>
+                        <span className="text-muted" style={{ fontSize: '0.8rem', fontWeight: 500 }}>ID: #{res.id.substring(0, 8)}</span>
+                    </div>
                 </div>
-                <span className={res.status === "ACTIVE" ? "badge green" : "badge red"}>
-                  {res.status}
+                <span className={`badge ${res.status === 'ACTIVE' ? 'badge-success' : 'badge-danger'}`}>
+                  {res.status === 'ACTIVE' ? '● Operational' : '○ Out of Order'}
                 </span>
               </div>
 
-              <div className="details">
-                <div className="detail-item">
-                  <MapPin size={16} />
-                  <span>{res.location}</span>
+              <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem' }}>
+                  <span style={{ fontSize: '0.7rem', padding: '0.2rem 0.5rem', background: '#f1f5f9', borderRadius: '4px', fontWeight: 600, color: '#475569' }}>
+                      {res.type.replace('_', ' ')}
+                  </span>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1.5rem', background: '#f8fafc', padding: '1rem', borderRadius: '12px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '0.85rem' }}>
+                  <MapPin size={16} color="var(--text-muted)" />
+                  <span style={{ fontWeight: 500 }}>{res.location}</span>
                 </div>
-                <div className="detail-item">
-                  <Users size={16} />
-                  <span>Capacity: {res.capacity} students</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '0.85rem' }}>
+                  <Users size={16} color="var(--text-muted)" />
+                  <span style={{ fontWeight: 500 }}>Capacity: {res.capacity} Students</span>
                 </div>
               </div>
 
-              {res.description && (
-                <p style={{ fontSize: '0.85rem', marginTop: '1rem', borderTop: '1px solid var(--border)', paddingTop: '0.75rem' }}>
-                  {res.description}
-                </p>
-              )}
+              <div style={{ display: 'flex', gap: '0.75rem' }}>
+                  <button className="btn" style={{ flex: 1, padding: '0.6rem', fontSize: '0.85rem', background: '#f8fafc', border: '1px solid var(--border)' }}>View Logs</button>
+                  <button className="btn btn-primary" style={{ flex: 2, padding: '0.6rem', fontSize: '0.85rem' }}>Manage Facility</button>
+              </div>
             </div>
           ))}
         </div>
       )}
+
+      <style>{`
+        @keyframes spin { to { transform: rotate(360deg); } }
+      `}</style>
     </div>
   );
 }
+

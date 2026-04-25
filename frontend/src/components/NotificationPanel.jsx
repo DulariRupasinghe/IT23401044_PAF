@@ -1,98 +1,113 @@
-import React, { useState, useEffect, useCallback } from "react";
-import * as notificationApi from "../services/api";
+import React from "react";
+import * as api from "../services/api";
+import { Bell, X, Check, Trash2, Clock, Info } from "lucide-react";
 
-export default function NotificationPanel() {
-  const [notifications, setNotifications] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  const fetchNotifications = useCallback(async () => {
-    try {
-      const { data } = await notificationApi.getNotifications();
-      setNotifications(data);
-    } catch (error) {
-      console.error("Error fetching notifications", error);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchNotifications();
-    const intervalId = setInterval(fetchNotifications, 10000);
-    return () => clearInterval(intervalId);
-  }, [fetchNotifications]);
+export default function NotificationPanel({ isOpen, onClose, notifications, refreshNotifs }) {
+  const unreadCount = notifications.filter((n) => !n.read).length;
 
   const handleMarkAsRead = async (id) => {
     try {
-      await notificationApi.markAsRead(id);
-      fetchNotifications();
+      await api.markAsRead(id);
+      refreshNotifs();
     } catch (error) {
-      console.error("Error marking as read", error);
+      console.error("Failed to mark notification as read", error);
     }
   };
 
   const handleMarkAllRead = async () => {
     try {
-      await notificationApi.markAllRead();
-      fetchNotifications();
+      await api.markAllRead();
+      refreshNotifs();
     } catch (error) {
-      console.error("Error marking all read", error);
+      console.error("Failed to mark all as read", error);
     }
   };
 
   const handleDelete = async (id) => {
     try {
-      await notificationApi.deleteNotification(id);
-      fetchNotifications();
+      await api.deleteNotification(id);
+      refreshNotifs();
     } catch (error) {
-      console.error("Error deleting notification", error);
+      console.error("Failed to delete notification", error);
     }
   };
 
-  if (loading) return <div className="card">Loading campus alerts...</div>;
-
-  const unreadCount = notifications.filter(n => !n.read).length;
+  const formatTime = (timestamp) => {
+    const date = new Date(timestamp);
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  };
 
   return (
-    <div className="card notification-panel">
-      <div className="header-section">
-        <h3>
-          Campus Notifications Hub
-          {unreadCount > 0 && <span className="unread-count">{unreadCount}</span>}
-        </h3>
-        {unreadCount > 0 && (
-            <button className="btn btn-primary" onClick={handleMarkAllRead}>
-              Mark All as Read
-            </button>
-        )}
-      </div>
+    <>
+      {/* Backdrop */}
+      {isOpen && (
+        <div 
+          onClick={onClose}
+          style={{ position: 'fixed', inset: 0, background: 'rgba(15, 23, 42, 0.4)', backdropFilter: 'blur(4px)', zIndex: 999 }}
+        />
+      )}
 
-      {notifications.length === 0 ? (
-        <div className="empty-state">
-            <p>You're all caught up! No new alerts.</p>
+      <div className={`notification-panel ${isOpen ? "open" : ""}`}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+          <div>
+            <h3 style={{ fontSize: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              Notifications
+              {unreadCount > 0 && <span className="unread-count">{unreadCount}</span>}
+            </h3>
+            <p className="text-muted" style={{ fontSize: '0.85rem' }}>System updates and alerts</p>
+          </div>
+          <button className="btn-icon" onClick={onClose}><X size={20} /></button>
         </div>
-      ) : (
-        <div className="notification-list">
-          {notifications.map((n) => (
-            <div key={n.id} className={`notification-item ${!n.read ? 'unread' : ''}`}>
-              <div className="notif-header">
-                <span className="title">{n.title}</span>
-                <span className="time">{new Date(n.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+
+        {unreadCount > 0 && (
+          <button 
+            className="btn" 
+            style={{ width: '100%', marginBottom: '1.5rem', background: '#f8fafc', border: '1px solid var(--border)', justifyContent: 'center', fontSize: '0.85rem' }}
+            onClick={handleMarkAllRead}
+          >
+            <Check size={16} /> Mark all as read
+          </button>
+        )}
+
+        <div className="notification-list" style={{ overflowY: 'auto', maxHeight: 'calc(100vh - 200px)', paddingRight: '0.5rem' }}>
+          {notifications.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '4rem 2rem' }}>
+              <div style={{ width: '64px', height: '64px', background: '#f8fafc', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem', color: 'var(--text-muted)' }}>
+                <Bell size={32} opacity={0.3} />
               </div>
-              <p className="message">{n.message}</p>
-              <div className="footer">
-                <span className={`badge-type ${n.type.toLowerCase()}`}>{n.type}</span>
-                <div className="actions">
-                    {!n.read && (
-                        <button className="btn-small" onClick={() => handleMarkAsRead(n.id)}>Mark Read</button>
-                    )}
-                    <button className="btn-small btn-delete" onClick={() => handleDelete(n.id)}>Delete</button>
+              <p className="text-muted">No notifications yet</p>
+            </div>
+          ) : (
+            notifications.map((n) => (
+              <div key={n.id} className={`notification-item ${!n.read ? "unread" : ""}`}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                  <span className={`badge-type ${n.type ? n.type.toLowerCase() : "system"}`}>
+                    {n.type || "System"}
+                  </span>
+                  <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                    <Clock size={12} /> {formatTime(n.timestamp)}
+                  </span>
+                </div>
+                
+                <h4 style={{ fontSize: '0.95rem', marginBottom: '0.25rem' }}>{n.title}</h4>
+                <p style={{ fontSize: '0.85rem', color: 'var(--text-main)', opacity: 0.8, marginBottom: '1rem' }}>{n.message}</p>
+
+                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem' }}>
+                  {!n.read && (
+                    <button className="btn-icon" onClick={() => handleMarkAsRead(n.id)} title="Mark as read">
+                      <Check size={14} />
+                    </button>
+                  )}
+                  <button className="btn-icon btn-delete" onClick={() => handleDelete(n.id)} title="Delete">
+                    <Trash2 size={14} />
+                  </button>
                 </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
-      )}
-    </div>
+      </div>
+    </>
   );
 }
+

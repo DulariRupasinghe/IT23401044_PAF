@@ -1,6 +1,6 @@
 import React from "react";
 import * as api from "../services/api";
-import { Bell, X, Check, Trash2, Clock, Info } from "lucide-react";
+import { X, Bell, Trash2, Check, CheckCircle, Clock } from "lucide-react";
 
 export default function NotificationPanel({ isOpen, onClose, notifications, refreshNotifs }) {
   const unreadCount = notifications.filter((n) => !n.read).length;
